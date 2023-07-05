@@ -20,12 +20,12 @@ body{
     height: 200px;
     width: 200px;
     position: absolute;
-    border-radius: 200%;
+    border-radius: 100%;
 }
 .shape:first-child{
     background: linear-gradient(
         #7e18ad,
-        #c123f6
+        #3ec2da
     );
     left: -80px;
     top: -80px;
@@ -33,14 +33,14 @@ body{
 .shape:last-child{
     background: linear-gradient(
         to right,
-        #2ff1ff,
+        #5b2071,
         #19bef0
     );
     right: -30px;
     bottom: -80px;
 }
 form{
-    height: 520px;
+    height: 600px;
     width: 400px;
     background-color: rgba(255,255,255,0.13);
     position: absolute;
