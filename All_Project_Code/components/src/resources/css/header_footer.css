@@ -1,5 +1,5 @@
 #navbar-buttons{
-font-size: large;
+    font-size: large;
 }
 
 #search-button{
@@ -9,5 +9,13 @@ font-size: large;
 
 #login-button{
     color: white;
+}
+
+#cart-img{
+    height: 38px;
+}
+
+#login-img{
+    height: 40px;
 }
 
