@@ -20,7 +20,7 @@ body{
     height: 200px;
     width: 200px;
     position: absolute;
-    border-radius: 200%;
+    border-radius: 100%;
 }
 .shape:first-child{
     background: linear-gradient(
@@ -40,7 +40,7 @@ body{
     bottom: -80px;
 }
 form{
-    height: 520px;
+    height: 600px;
     width: 400px;
     background-color: rgba(255,255,255,0.13);
     position: absolute;
