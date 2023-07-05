@@ -1,5 +1,8 @@
 // importing the dependencies
 // Express is a NodeJS framework that, among other features, allows us to create HTML templates.
+
+console.log('Starting up...');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const pgp = require('pg-promise')();
@@ -25,4 +28,8 @@ const db = pgp(dbConfig);
 const message = 'Hey there!';
 app.get('/', (req, res) => {
   res.send(message);
+});
+
+app.listen(4000, () => {
+  console.log('listening on port 4000');
 });
