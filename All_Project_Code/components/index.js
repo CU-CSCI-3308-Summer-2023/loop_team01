@@ -12,10 +12,10 @@ require('dotenv').config();
 const app = express();
 // using bodyParser to parse JSON in the request body into JS objects
 app.use(bodyParser.json());
-// Database connection details
+// Database connection details 
 const dbConfig = {
   host: process.env.POSTGRES_HOST,
-  port: 5432,
+  port: 4000,
   database: process.env.POSTGRES_DB,
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
