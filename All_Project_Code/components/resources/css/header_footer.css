@@ -1,0 +1,41 @@
+#navbar-buttons{
+    font-size: large;
+}
+
+#search-button{
+    color: white;
+    border-color: white;
+}
+
+#login-button{
+    color: white;
+}
+
+#search-button:hover{
+    background-color: blue;
+}
+
+#cart-img{
+    height: 38px;
+}
+
+#login-img{
+    height: 40px;
+}
+
+#footer-text{
+    color: white;
+    opacity: .5;
+}
+
+#footer-text:hover{
+    text-decoration: none;
+    opacity: 1;
+    color: lightgrey;
+}
+
+#favorite-star:hover{
+    background-color: gold;
+}
+
+
