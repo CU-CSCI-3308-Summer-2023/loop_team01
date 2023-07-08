@@ -10,6 +10,7 @@ const { brotliDecompress } = require('zlib');
 
 // defining the Express app
 const app = express();
+// defining a static directoy
 const staticDir = path.join(__dirname, "resources");
 app.use(express.static(staticDir));
 // using bodyParser to parse JSON in the request body into JS objects
