@@ -6,6 +6,7 @@ const pgp = require('pg-promise')();
 const path = require("path");
 require('dotenv').config();
 const session = require("express-session");
+const { brotliDecompress } = require('zlib');
 
 // defining the Express app
 const app = express();
@@ -47,16 +48,103 @@ app.use(
     resave: true,
   })
 );
-
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
 
+const user= {
+  user_id: undefined,
+  first_name: undefined,
+  last_name: undefined,
+  username: undefined,
+  email: undefined,
+  password: undefined,
+  admin: undefined,
+  image_url: undefined,
+};
+const all_products = `SELECT * FROM products`;
+const favorite_products = `SELECT * FROM favorite_products 
+JOIN products ON favorite_products.product_id=products.product_id 
+WHERE favorite_product.user_id=$1;`;
+const cart = `SELECT * FROM cart
+JOIN products on cart.product_id=products.product_id
+WHERE user_id=$1`;
+const user_image = `SELECT image_url FROM users WHERE user_id=$1`;
+const add_to_cart = `INSERT INTO cart (user_id, product_id) VALUES ($1, $2)`;
+const add_to_favorites = `INSERT INTO favorite_products (user_id, product_id) VALUES ($1, $2)`;
+
 // <!-- Endpoint 1 :  Default endpoint ("/") -->
 app.get('/', (req, res) => {
-  res.render("pages/home");
+  if (!req.session.user){
+    db.any(all_products)
+    .then(products => {
+      res.render("pages/home", {
+        products,
+      });
+    })
+    .catch(err => {
+      res.render("pages/home", {
+        products: [],
+      });
+    });
+  }
+  else{
+    db.task('get-all', task => {
+      return task.batch([task.any(all_products), task.any(favorite_products, [req.session.user.user_id]), task.one(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
+    })
+    .then(products => {
+      res.render("pages/home", {
+        products: products[0],
+        favorite_products: products[1],
+        cart: products[2],
+        user_image: products[3],
+      });
+    })
+    .catch(err => {
+      res.render("pages/home", {
+        all_products: [],
+        favorite_products: [],
+        cart: [],
+        user_image: [],
+      });
+    });
+  }
+});
+
+app.post("/cart/add", (req, res) => {
+  if (!req.session.user){
+    res.redirect("/login");
+  }
+  else{
+    db.none(add_to_cart, [req.session.user.user_id, req.body.product_id])
+    .then(() => {
+      res.redirect("/");
+    })
+    .catch(err => {
+      res.redirect("/");
+    });
+  }
+});
+
+app.post("/favorite/add", (req, res) => {
+  if (!req.session.user){
+    res.redirect("/login");
+  }
+  else{
+    db.none(add_to_favorites, [req.session.user.user_id, req.body.product_id])
+    .then(() => {
+      res.redirect("/");
+    })
+    .catch(err => {
+      res.redirect("/");
+    });
+  }
+});
+
+app.get("/login", (req, res) => {
+  res.render("pages/login");
 });
 
 

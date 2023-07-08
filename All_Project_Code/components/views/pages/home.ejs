@@ -1,3 +1,31 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
+
+<div class="container" style="max-width: 80%;">
+    <div class="row mt-5" ></div>
+    <div class="row mt-5 mb-5 text-center">
+        <% for (var i = 0; i < locals.products.length; i++){ %>
+            <div class="col">
+                <div class="card mb-3" style="width: 18rem; height: 375px; border-width: 3px;">
+                    <img src=<%=locals.products[i].image_url%> class="card-img-top rounded p-1" style="height: 175px;">
+                    <div class="card-body">
+                        <h3><%=locals.products[i].name%></h3>
+                        <p class="card-text">
+                            <%=locals.products[i].description%>
+                        </p>
+                        <div class="row justify-content-center">
+                            <form action="/cart/add" method="POST" class="mr-1 ml-1">
+                                <input type="submit" value="add to cart" class="btn btn-outline-success">
+                            </form>
+                            <form action="/favorite/add" method="POST" class="mr-1 ml-1">
+                                <input type="submit" value="favorite" class="btn btn-outline-warning">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
 <%- include ('../partials/footer') %>
