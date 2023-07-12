@@ -64,7 +64,7 @@ const user= {
   admin: undefined,
   image_url: undefined,
 };
-const all_products = `SELECT * FROM products`;
+const all_products = `SELECT * FROM products WHERE name LIKE $1`;
 const favorite_products = `SELECT * FROM favorite_products 
 JOIN products ON favorite_products.product_id=products.product_id 
 WHERE favorite_product.user_id=$1;`;
@@ -77,8 +77,12 @@ const add_to_favorites = `INSERT INTO favorite_products (user_id, product_id) VA
 
 // <!-- Endpoint 1 :  Default endpoint ("/") -->
 app.get('/', (req, res) => {
+  var filter = '%';
+  if (req.query.name){
+    filter = req.query.name+'%';
+  }
   if (!req.session.user){
-    db.any(all_products)
+    db.any(all_products, [filter])
     .then(products => {
       res.render("pages/home", {
         products,
@@ -92,7 +96,7 @@ app.get('/', (req, res) => {
   }
   else{
     db.task('get-all', task => {
-      return task.batch([task.any(all_products), task.any(favorite_products, [req.session.user.user_id]), task.one(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
+      return task.batch([task.any(all_products, [filter]), task.any(favorite_products, [req.session.user.user_id]), task.one(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
     })
     .then(products => {
       res.render("pages/home", {
@@ -111,6 +115,11 @@ app.get('/', (req, res) => {
       });
     });
   }
+});
+
+app.post("/search", (req, res) => {
+  //res.redirect("/?name=" + req.query.name); name is undefined?
+  res.redirect("/?name=");
 });
 
 app.post("/cart/add", (req, res) => {
@@ -150,6 +159,10 @@ app.get("/login", (req, res) => {
 
 
 
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.render("pages/logout");
+});
 
 // Listening on port 4000
 app.listen(4000, () => {
