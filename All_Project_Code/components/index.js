@@ -150,7 +150,44 @@ app.get("/login", (req, res) => {
 
 app.get("/carousel", (req, res) => {
   res.render("pages/carousel");
+  if (!req.session.user){
+    db.any(all_products)
+    .then(products => {
+      res.render("pages/carousel", {
+        products,
+      });
+    })
+    .catch(err => {
+      res.render("pages/home", {
+        products: [],
+      });
+    });
+  }
+  else{
+    db.task('get-all', task => {
+      return task.batch([task.any(all_products), task.any(favorite_products, [req.session.user.user_id]), task.one(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
+    })
+    .then(products => {
+      res.render("pages/home", {
+        products: products[0],
+        favorite_products: products[1],
+        cart: products[2],
+        user_image: products[3],
+      });
+    })
+    .catch(err => {
+      res.render("pages/home", {
+        all_products: [],
+        favorite_products: [],
+        cart: [],
+        user_image: [],
+      });
+    });
+  }
+
 });
+
+
 
 app.post("/login", (req, res) => {
 
