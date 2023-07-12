@@ -65,21 +65,25 @@ const user= {
   admin: undefined,
   image_url: undefined,
 };
-const all_products = `SELECT * FROM products`;
+const all_products = `SELECT * FROM products WHERE name LIKE $1`;
 const favorite_products = `SELECT * FROM favorite_products 
 JOIN products ON favorite_products.product_id=products.product_id 
-WHERE favorite_product.user_id=$1;`;
+WHERE favorite_products.user_id=$1;`;
 const cart = `SELECT * FROM cart
 JOIN products on cart.product_id=products.product_id
-WHERE user_id=$1`;
+WHERE cart.user_id=$1`;
 const user_image = `SELECT image_url FROM users WHERE user_id=$1`;
 const add_to_cart = `INSERT INTO cart (user_id, product_id) VALUES ($1, $2)`;
 const add_to_favorites = `INSERT INTO favorite_products (user_id, product_id) VALUES ($1, $2)`;
 
 // <!-- Endpoint 1 :  Default endpoint ("/") -->
 app.get('/', (req, res) => {
+  var filter = '%';
+  if (req.query.name){
+    filter = req.query.name+'%';
+  }
   if (!req.session.user){
-    db.any(all_products)
+    db.any(all_products, [filter])
     .then(products => {
       res.render("pages/home", {
         products,
@@ -93,7 +97,7 @@ app.get('/', (req, res) => {
   }
   else{
     db.task('get-all', task => {
-      return task.batch([task.any(all_products), task.any(favorite_products, [req.session.user.user_id]), task.one(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
+      return task.batch([task.any(all_products, [filter]), task.any(favorite_products, [req.session.user.user_id]), task.any(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
     })
     .then(products => {
       res.render("pages/home", {
@@ -104,6 +108,7 @@ app.get('/', (req, res) => {
       });
     })
     .catch(err => {
+      console.log(err);
       res.render("pages/home", {
         all_products: [],
         favorite_products: [],
@@ -112,6 +117,11 @@ app.get('/', (req, res) => {
       });
     });
   }
+});
+
+app.post("/search", (req, res) => {
+  //res.redirect("/?name=" + req.query.name); name is undefined?
+  res.redirect("/?name=");
 });
 
 app.post("/cart/add", (req, res) => {
@@ -152,19 +162,68 @@ app.get("/carousel", (req, res) => {
   res.render("pages/carousel");
 });
 
-app.post("/login", (req, res) => {
-
-  
-
+app.get("/signUp", (req, res) => {
+  res.render("pages/signUp");
 });
+
+app.post("/login", (req, res) => {
+  const query = `SELECT * FROM users WHERE username='${req.body.username}' AND password='${req.body.password}'`;
+
+  db.one(query)
+  .then(data => {
+    user.user_id = data.user_id;
+    user.first_name = data.first_name;
+    user.last_name = data.last_name;
+    user.username = data.username;
+    user.email = data.email;
+    user.password = data.password;
+    user.admin = data.admin;
+    user.image_url = data.image_url;
+
+    req.session.user = user;
+    req.session.save();
+    res.redirect("/");
+  })
+  .catch(err => {
+    res.redirect("pages/login")
+  });
+});
+
 
 app.post("/signUp", (req, res) => {
+  var newUser = `SELECT username FROM users WHERE username='${req.body.username}'`;
+  db.any(newUser)
+  .then(user => {
+    if (user[0]){
+      res.redirect("/signUp", {
+        message: "username taken"
+      });
+    }
+    else{
+      newUser = `INSERT INTO users (first_name, last_name, username, email, password, admin, image_url)
+      VALUES ('First', 'Last', '${req.body.username}', '${req.body.email}', '${req.body.password}', false, 'images/default.png')`;
 
-
-
+      db.none(newUser)
+      .then(() => {
+        res.redirect("/login");
+      })
+      .catch(err => {
+        console.log(err);
+        res.redirect("/signUp");
+      });
+    }
+  })
+  .catch(err => {
+    console.log(err);
+    res.redirect("/signUp");
+  });
 });
 
 
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.render("pages/logout");
+});
 
 // Listening on port 4000
 app.listen(4000, () => {
