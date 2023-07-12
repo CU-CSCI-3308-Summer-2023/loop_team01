@@ -255,6 +255,20 @@ app.post("/signUp", (req, res) => {
   });
 });
 
+app.patch('/updateCart/:userId/:productId', (req, res) => {
+  const { userId, productId } = req.params;
+  const { quantity } = req.body;
+  
+  pool.query('UPDATE cart_clothes SET quantity = $1 WHERE user_id = $2 AND product_id = $3', [quantity, userId, productId], (err) => {
+    if (err) {
+      // Handle error
+      res.json({ success: false, error: err.message });
+    } else {
+      res.json({ success: true });
+    }
+  });
+});
+
 
 app.get("/logout", (req, res) => {
   req.session.destroy();

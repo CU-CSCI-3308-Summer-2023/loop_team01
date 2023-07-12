@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cart</title>
+        <%- include ('../partials/header') %> 
+        <%- include ('../partials/menu') %>
+    </head>
+    <body>
+        
+    </body>
+    <h1>Your Shopping Cart</h1>
+    <div class="container">
+        <% if (!cartItems || cartItems.length === 0) { %>
+            <p>Your cart is currently empty.</p>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let grandTotal = 0; %>
+                    <% cartItems.forEach(function(item) { %>
+                        <% let subtotal = item.quantity * item.price; %>
+                        <% grandTotal += subtotal; %>
+                        <tr>
+                            <td><%= item.name %></td>
+                            <td><%= item.price.toFixed(2) %></td>
+                            <td>
+                                <input type="number" min="1" max="99" value="<%= item.quantity %>" 
+                                data-product-id="<%= item.product_id %>">
+                            </td>
+                            <td><%= subtotal.toFixed(2) %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total:</td>
+                        <td><%= grandTotal.toFixed(2) %></td>
+                    </tr>
+                </tfoot>
+            </table>
+        <% } %>
+
+    </div>
+    <%- include ('../partials/footer') %>
+</html>
