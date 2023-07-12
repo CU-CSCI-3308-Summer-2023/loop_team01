@@ -10,11 +10,12 @@ const { brotliDecompress } = require('zlib');
 
 // defining the Express app
 const app = express();
+// defining a static directoy
 const staticDir = path.join(__dirname, "resources");
 app.use(express.static(staticDir));
 // using bodyParser to parse JSON in the request body into JS objects
 app.use(bodyParser.json());
-// Database connection details
+// Database connection details 
 const dbConfig = {
   host: process.env.POSTGRES_HOST,
   port: 5432,
@@ -156,7 +157,17 @@ app.get("/login", (req, res) => {
   res.render("pages/login");
 });
 
+app.post("/login", (req, res) => {
 
+  
+
+});
+
+app.post("/signUp", (req, res) => {
+
+
+
+});
 
 
 app.get("/logout", (req, res) => {
