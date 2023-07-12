@@ -148,6 +148,10 @@ app.get("/login", (req, res) => {
   res.render("pages/login");
 });
 
+app.get("/carousel", (req, res) => {
+  res.render("pages/carousel");
+});
+
 app.post("/login", (req, res) => {
 
   
