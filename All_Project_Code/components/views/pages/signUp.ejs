@@ -8,17 +8,17 @@
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-    <form>
+    <form action="/signUp" method="POST">
         <h3>Sign Up Here</h3>
 
-        <label for="username">E-mail</label>
-        <input type="text" placeholder="Email" id="username">
+        <label for="email">E-mail</label>
+        <input type="text" name="email" placeholder="Email" id="username">
+
+        <label for="username">Username</label>
+        <input type="username" name="username" placeholder="username" id="username">
 
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password">
-
-        <label for="password">Confirm Password</label>
-        <input type="password" placeholder="Password" id="password">
+        <input type="password" name="password" placeholder="Password" id="password">
 
         <button>Sign Up</button>
         <div class="social">
