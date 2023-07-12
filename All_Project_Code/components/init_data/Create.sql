@@ -27,8 +27,9 @@ CREATE TABLE IF NOT EXISTS favorite_products (
     product_id INT NOT NULL
 );
 
-DROP TABLE IF EXISTS cart CASCADE;
-CREATE TABLE IF NOT EXISTS cart_clothes (
-    user_id INT NOT NULL,
-    product_id INT NOT NULL
+DROP TABLE IF EXISTS cart_products CASCADE;
+CREATE TABLE IF NOT EXISTS cart_products (
+user_id INT NOT NULL,
+product_id INT NOT NULL,
+quantity INT NOT NULL
 );
