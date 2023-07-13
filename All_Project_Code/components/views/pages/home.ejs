@@ -15,10 +15,28 @@
                         </p>
                         <div class="row justify-content-center">
                             <form action="/cart/add" method="POST" class="mr-1 ml-1">
-                                <input type="submit" value="add to cart" class="btn btn-outline-success">
+                                <input type="submit" value="add to cart" class="btn btn-outline-success" 
+                                <% if (locals.cart.length != 0){
+                                    for (var j = 0; j < locals.cart.length; j++){
+                                        if (locals.cart[j].product_id == locals.products[i].product_id){ %>
+                                            disabled
+                                        <% }
+                                    }
+                                } %>
+                                >
+                                <input type="hidden" name="product_id" value=<%=locals.products[i].product_id%>>
                             </form>
                             <form action="/favorite/add" method="POST" class="mr-1 ml-1">
-                                <input type="submit" value="favorite" class="btn btn-outline-warning">
+                                <input type="submit" value="favorite" class="btn btn-outline-warning"
+                                <% if (locals.favorite_products.length != 0){
+                                    for (var j = 0; j < locals.favorite_products.length; j++){
+                                        if (locals.favorite_products[j].product_id == locals.products[i].product_id){ %>
+                                            disabled
+                                        <% }
+                                    }
+                                } %>
+                                >
+                                <input type="hidden" name="product_id" value=<%=locals.products[i].product_id%>>
                             </form>
                         </div>
                     </div>

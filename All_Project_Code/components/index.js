@@ -87,11 +87,17 @@ app.get('/', (req, res) => {
     .then(products => {
       res.render("pages/home", {
         products,
+        favorite_products: [],
+        cart: [],
+        user_image: [],
       });
     })
     .catch(err => {
       res.render("pages/home", {
         products: [],
+        favorite_products: [],
+        cart: [],
+        user_image: [],
       });
     });
   }
@@ -108,9 +114,8 @@ app.get('/', (req, res) => {
       });
     })
     .catch(err => {
-      console.log(err);
       res.render("pages/home", {
-        all_products: [],
+        products: [],
         favorite_products: [],
         cart: [],
         user_image: [],
@@ -194,7 +199,6 @@ app.get("/carousel", (req, res) => {
       });
     });
   }
-
 });
 
 
@@ -255,6 +259,25 @@ app.post("/signUp", (req, res) => {
   });
 });
 
+app.get("/cart", (req, res) => {
+  if (!req.session.user){
+    res.redirect("/login");
+  }
+  else{
+    db.any(cart, [req.session.user.user_id])
+    .then(cartItems => {
+      res.render("pages/cart", {
+        cartItems,
+      });
+    })
+    .catch(err => {
+      res.render("pages/cart", {
+        cartItems: [],
+      });
+    });
+  }
+});
+
 app.patch('/updateCart/:userId/:productId', (req, res) => {
   const { userId, productId } = req.params;
   const { quantity } = req.body;
@@ -269,10 +292,9 @@ app.patch('/updateCart/:userId/:productId', (req, res) => {
   });
 });
 
-
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.render("pages/logout");
+  res.redirect("/");
 });
 
 // Listening on port 4000
