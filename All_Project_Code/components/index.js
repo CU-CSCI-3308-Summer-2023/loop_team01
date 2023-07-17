@@ -6,6 +6,7 @@ const pgp = require('pg-promise')();
 const path = require("path");
 require('dotenv').config();
 const session = require("express-session");
+//const bcrypt = require('bcrypt');
 const { brotliDecompress } = require('zlib');
 
 // defining the Express app
@@ -79,8 +80,8 @@ const add_to_favorites = `INSERT INTO favorite_products (user_id, product_id) VA
 // <!-- Endpoint 1 :  Default endpoint ("/") -->
 app.get('/', (req, res) => {
   var filter = '%';
-  if (req.query.name){
-    filter = req.query.name+'%';
+  if (req.query.filter){
+    filter = req.query.filter+'%';
   }
   if (!req.session.user){
     db.any(all_products, [filter])
@@ -125,8 +126,7 @@ app.get('/', (req, res) => {
 });
 
 app.post("/search", (req, res) => {
-  //res.redirect("/?name=" + req.query.name); name is undefined?
-  res.redirect("/?name=");
+  res.redirect("/?name=" + req.query.filter);
 });
 
 app.post("/cart/add", (req, res) => {
