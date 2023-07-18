@@ -125,8 +125,8 @@ app.get('/', (req, res) => {
   }
 });
 
-app.post("/search", (req, res) => {
-  res.redirect("/?name=" + req.query.filter);
+app.get("/search", (req, res) => {
+  res.redirect("/?filter=" + req.query.filter);
 });
 
 app.post("/cart/add", (req, res) => {
@@ -144,6 +144,18 @@ app.post("/cart/add", (req, res) => {
   }
 });
 
+app.post("/cart/remove", (req, res) => {
+  var query = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
+
+  db.none(query, [req.session.user.user_id, req.body.product_id])
+  .then(() => {
+    res.redirect("/cart");
+  })
+  .catch(err => {
+    res.redirect("/cart");
+  });
+});
+
 app.post("/favorite/add", (req, res) => {
   if (!req.session.user){
     res.redirect("/login");
@@ -157,6 +169,18 @@ app.post("/favorite/add", (req, res) => {
       res.redirect("/");
     });
   }
+});
+
+app.post("/favorite/remove", (req, res) => {
+  var query = `DELETE FROM favorite_products WHERE user_id=$1 AND product_id=$2`;
+
+  db.none(query, [req.session.user.user_id, req.body.product_id])
+  .then(() => {
+    res.redirect("/favorite");
+  })
+  .catch(err => {
+    res.redirect("/favorite");
+  });
 });
 
 app.get("/login", (req, res) => {
@@ -200,7 +224,6 @@ app.get("/carousel", (req, res) => {
     });
   }
 });
-
 
 app.get("/signUp", (req, res) => {
   res.render("pages/signUp");
