@@ -184,7 +184,12 @@ app.post("/favorite/remove", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("pages/login");
+  if (!req.session.user){
+    res.render("pages/login");
+  }
+  else{
+    res.redirect("/user");
+  }
 });
 
 app.get("/signUp", (req, res) => {
