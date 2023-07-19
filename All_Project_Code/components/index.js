@@ -159,9 +159,24 @@ app.post("/favorite/add", (req, res) => {
   }
 });
 
+app.get("/about", (req, res) => {
+  req.session.destroy();
+  res.render("pages/about");
+});
+
+app.get("/contact", (req, res) => {
+  req.session.destroy();
+  res.render("pages/contact");
+});
+
 app.get("/login", (req, res) => {
   res.render("pages/login");
 });
+
+app.get('/favorites', (req, res) => {
+  res.render('pages/favorites', { favorites: favorite_products });
+});
+
 
 app.get("/carousel", (req, res) => {
   res.render("pages/carousel");
