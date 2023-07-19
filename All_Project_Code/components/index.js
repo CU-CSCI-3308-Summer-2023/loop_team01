@@ -282,6 +282,64 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+//endpoint to render favorite page
+
+
+app.get("/favorites", (req, res) => {
+
+  if (!req.session.user) {
+    res.redirect("/login");
+  } else {
+    
+    var filter = '%';
+    if (req.query.name){
+      filter = req.query.name+'%';
+    }
+    if (!req.session.user){
+      db.any(all_products, [filter])
+      .then(products => {
+        res.render("pages/favorites", {
+          products,
+          favorite_products: [],
+          cart: [],
+          user_image: [],
+        });
+      })
+      .catch(err => {
+        res.render("pages/favorites", {
+          products: [],
+          favorite_products: [],
+          cart: [],
+          user_image: [],
+        });
+      });
+    }
+    else{
+      db.task('get-all', task => {
+        return task.batch([task.any(all_products, [filter]), task.any(favorite_products, [req.session.user.user_id]), task.any(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
+      })
+      .then(products => {
+        res.render("pages/favorites", {
+          products: products[0],
+          favorite_products: products[1],
+          cart: products[2],
+          user_image: products[3],
+        });
+      })
+      .catch(err => {
+        res.render("pages/favorites", {
+          products: [],
+          favorite_products: [],
+          cart: [],
+          user_image: [],
+        });
+      });
+    }
+
+  } 
+
+});
+
 // Listening on port 4000
 app.listen(4000, () => {
   console.log('listening on port 4000');

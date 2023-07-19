@@ -10,21 +10,24 @@
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
+    <div class="container">
     <form action="/login" method="POST" id="login-form">
-        <h3>Login Here</h3>
+        <h3 id="loginText">Login Here</h3>
 
-        <label for="username">Username</label>
+        <label for="username" id="loginText">Username</label>
         <input type="text" name="username" placeholder="Email or Phone" id="username">
 
-        <label for="password">Password</label>
+        <label for="password" id="loginText">Password</label>
         <input type="password" name="password" placeholder="Password" id="password">
 
         <button>Log In</button>
-        <div class="social">
-          <div class="go"><i class="fab fa-google"></i>  Google</div>
-          <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
-        </div>
+
+        <a href="./signUp">
+          <input type="button" id="signUpfromLogin" value="signUp?">
+        </a>
     </form>
+
+    </div>
     </body>
 </html>
 

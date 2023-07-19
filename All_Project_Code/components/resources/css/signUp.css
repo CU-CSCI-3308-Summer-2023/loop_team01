@@ -39,6 +39,14 @@ body{
     right: -30px;
     bottom: -80px;
 }
+
+#signUpText{
+
+    color: #ffffff;
+
+}
+
+
 #signUp-form{
     height: 600px;
     width: 400px;
