@@ -297,9 +297,15 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/user", (req, res) => {
+  if (!req.session.user) {
+    res.redirect("/login");
+  } else {
+    res.render("pages/user");
+  }
+});
+
 //endpoint to render favorite page
-
-
 app.get("/favorites", (req, res) => {
 
   if (!req.session.user) {
