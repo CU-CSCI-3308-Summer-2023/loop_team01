@@ -321,6 +321,20 @@ app.get("/favorites", (req, res) => {
   } 
 });
 
+app.get("/carousel", (req, res) => {
+  db.any(all_products, ['%'])
+  .then(products => {
+    res.render("pages/carousel", {
+      products,
+    });
+  })
+  .catch(err => {
+    res.render("pages/carousel", {
+      products: [],
+    });
+  });
+});
+
 app.get("/add", (req, res) => {
   if (!req.session.user){
     res.redirect("/login");
