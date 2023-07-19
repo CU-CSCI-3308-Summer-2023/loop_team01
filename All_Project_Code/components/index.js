@@ -129,20 +129,6 @@ app.get("/search", (req, res) => {
   res.redirect("/?filter=" + req.query.filter);
 });
 
-app.get("/favorite", (req, res) => {
-  db.any(favorite_products, [req.session.user.user_id])
-  .then(favorite_products => {
-    res.render("pages/favorites", {
-      favorite_products,
-    });
-  })
-  .catch(err => {
-    res.render("pages/favorites", {
-      favorite_products: [],
-    });
-  })
-});
-
 app.post("/cart/add", (req, res) => {
   if (!req.session.user){
     res.redirect("/login");
@@ -282,9 +268,6 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-//endpoint to render favorite page
-
-
 app.get("/favorites", (req, res) => {
 
   if (!req.session.user) {
@@ -335,9 +318,16 @@ app.get("/favorites", (req, res) => {
         });
       });
     }
-
   } 
+});
 
+app.get("/add", (req, res) => {
+  if (!req.session.user){
+    res.redirect("/login");
+  }
+  else{
+    res.render("pages/add_product");
+  }
 });
 
 // Listening on port 4000
