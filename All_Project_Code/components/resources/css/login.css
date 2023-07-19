@@ -1,14 +1,12 @@
-*,
-*:before,
-*:after{
+#login-page,
+#login-page:before,
+#login-page:after{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
-body{
-    background-color: #080710;
-}
-.background{
+
+#login-background{
     width: 430px;
     height: 520px;
     position: absolute;
@@ -16,13 +14,13 @@ body{
     left: 50%;
     top: 50%;
 }
-.background .shape{
+#login-shape{
     height: 200px;
     width: 200px;
     position: absolute;
     border-radius: 200%;
 }
-.shape:first-child{
+#login-shape:first-child{
     background: linear-gradient(
         #7e18ad,
         #3ec2da
@@ -30,7 +28,7 @@ body{
     left: -80px;
     top: -80px;
 }
-.shape:last-child{
+#login-shape:last-child{
     background: linear-gradient(
         to right,
         #5b2071,
@@ -64,7 +62,7 @@ body{
 
 }
 
-#loginText{
+#login-text{
 
     color: #ffffff;
 
@@ -76,6 +74,7 @@ body{
     outline: none;
     border: none;
 }
+
 #login-form h3{
     font-size: 32px;
     font-weight: 500;
@@ -83,13 +82,7 @@ body{
     text-align: center;
 }
 
-label{
-    display: block;
-    margin-top: 30px;
-    font-size: 16px;
-    font-weight: 500;
-}
-input{
+#login-input{
     display: block;
     height: 50px;
     width: 100%;
@@ -103,8 +96,8 @@ input{
 ::placeholder{
     color: #e5e5e5;
 }
-button{
-    margin-top: 50px;
+
+#login-button{
     width: 100%;
     background-color: #ffffff;
     color: #080710;
@@ -114,25 +107,4 @@ button{
     border-radius: 5px;
     cursor: pointer;
 }
-.social{
-  margin-top: 30px;
-  display: flex;
-}
-.social div{
-  background: red;
-  width: 150px;
-  border-radius: 3px;
-  padding: 5px 10px 10px 5px;
-  background-color: rgba(255,255,255,0.27);
-  color: #eaf0fb;
-  text-align: center;
-}
-.social div:hover{
-  background-color: rgba(255,255,255,0.47);
-}
-.social .fb{
-  margin-left: 25px;
-}
-.social i{
-  margin-right: 4px;
-}
+

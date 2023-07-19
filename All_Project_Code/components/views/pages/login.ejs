@@ -5,30 +5,29 @@
         <link rel="stylesheet" href="../css/login.css">
     </head>
 
-    <body>
-      <div class="background">
-        <div class="shape"></div>
-        <div class="shape"></div>
+    <div id="login-page">
+        <div class="background" id="login-background">
+              <div class="shape" id="login-shape"></div>
+              <div class="shape" id="login-shape"></div>
+        </div>
+        <div class="container">
+            <form action="/login" method="POST" id="login-form">
+              <h3 id="login-text">Login Here</h3>
+      
+              <label for="username" id="login-text">Username</label>
+              <input type="text" name="username" placeholder="Email or Phone" id="input-label">
+      
+              <label for="password" id="login-text">Password</label>
+              <input type="password" name="password" placeholder="Password" id="login-input">
+      
+              <button id="login-button">Log In</button>
+      
+              <a href="./signUp" style="text-decoration: none;">
+                <input type="button" id="login-button" value="SignUp">
+              </a>
+            </form> 
+        </div>
     </div>
-    <div class="container">
-    <form action="/login" method="POST" id="login-form">
-        <h3 id="loginText">Login Here</h3>
-
-        <label for="username" id="loginText">Username</label>
-        <input type="text" name="username" placeholder="Email or Phone" id="username">
-
-        <label for="password" id="loginText">Password</label>
-        <input type="password" name="password" placeholder="Password" id="password">
-
-        <button>Log In</button>
-
-        <a href="./signUp">
-          <input type="button" id="signUpfromLogin" value="signUp?">
-        </a>
-    </form>
-
-    </div>
-    </body>
 </html>
 
 <%- include ('../partials/footer') %>
