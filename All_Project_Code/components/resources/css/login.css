@@ -65,6 +65,10 @@
 #login-text{
 
     color: #ffffff;
+    display: block;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 500;
 
 }
 
@@ -102,6 +106,7 @@
     background-color: #ffffff;
     color: #080710;
     padding: 15px 0;
+    margin-top: 15px;
     font-size: 18px;
     font-weight: 600;
     border-radius: 5px;

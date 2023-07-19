@@ -1,12 +1,12 @@
-*,
-*:before,
-*:after{
+#signUp-page,
+#signUp-page:before,
+#signUp-page:after{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
-.background{
+#signUp-background{
     width: 430px;
     height: 520px;
     position: absolute;
@@ -14,13 +14,13 @@
     left: 50%;
     top: 50%;
 }
-.background .shape{
+#signUp-shape{
     height: 200px;
     width: 200px;
     position: absolute;
     border-radius: 100%;
 }
-.shape:first-child{
+#signUp-shape:first-child{
     background: linear-gradient(
         #7e18ad,
         #3ec2da
@@ -28,7 +28,7 @@
     left: -80px;
     top: -80px;
 }
-.shape:last-child{
+#signUp-shape:last-child{
     background: linear-gradient(
         to right,
         #5b2071,
@@ -38,12 +38,15 @@
     bottom: -80px;
 }
 
-#signUpText{
+#signUp-text{
 
     color: #ffffff;
+    display: block;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 500;
 
 }
-
 
 #signUp-form{
     height: 600px;
@@ -73,13 +76,7 @@
     text-align: center;
 }
 
-label{
-    display: block;
-    margin-top: 30px;
-    font-size: 16px;
-    font-weight: 500;
-}
-input{
+#signUp-input{
     display: block;
     height: 50px;
     width: 100%;
@@ -93,7 +90,7 @@ input{
 ::placeholder{
     color: #e5e5e5;
 }
-button{
+#signUp-button{
     margin-top: 50px;
     width: 100%;
     background-color: #ffffff;
@@ -104,25 +101,4 @@ button{
     border-radius: 5px;
     cursor: pointer;
 }
-.social{
-  margin-top: 30px;
-  display: flex;
-}
-.social div{
-  background: red;
-  width: 150px;
-  border-radius: 3px;
-  padding: 5px 10px 10px 5px;
-  background-color: rgba(255,255,255,0.27);
-  color: #eaf0fb;
-  text-align: center;
-}
-.social div:hover{
-  background-color: rgba(255,255,255,0.47);
-}
-.social .fb{
-  margin-left: 25px;
-}
-.social i{
-  margin-right: 4px;
-}
+

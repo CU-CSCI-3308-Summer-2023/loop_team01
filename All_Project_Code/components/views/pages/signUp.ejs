@@ -1,30 +1,25 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="../css/signUp.css">
-    </head>
+<%- include ('../partials/header') %> 
+<%- include ('../partials/secondary_menu') %>
 
-    <body>
-      <div class="background">
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-    <form action="/signUp" method="POST" id="signUp-form">
-        <h3 id="signUpText">Sign Up Here</h3>
-
-        <label for="email" id="signUpText">E-mail</label>
-        <input type="text" name="email" placeholder="Email" id="username">
-
-        <label for="username" id="signUpText">Username</label>
-        <input type="username" name="username" placeholder="username" id="username">
-
-        <label for="password" id="signUpText">Password</label>
-        <input type="password" name="password" placeholder="Password" id="password">
-
-        <button>Sign Up</button>
-        <div class="social">
-          <div class="go"><i class="fab fa-google"></i>  Google</div>
-          <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
+      <div id="signUp-page">
+        <div class="background" id="signUp-background">
+          <div class="shape" id="signUp-shape"></div>
+          <div class="shape" id="signUp-shape"></div>
         </div>
-    </form>
-    </body>
-</html>
+        <form action="/signUp" method="POST" id="signUp-form">
+          <h3 id="signUp-text">Sign Up Here</h3>
+  
+          <label for="email" id="signUp-text">E-mail</label>
+          <input type="text" name="email" placeholder="Email" id="signUp-input">
+  
+          <label for="username" id="signUp-text">Username</label>
+          <input type="username" name="username" placeholder="username" id="signUp-input">
+  
+          <label for="password" id="signUp-text">Password</label>
+          <input type="password" name="password" placeholder="Password" id="signUp-input">
+  
+          <button id="signUp-button">Sign Up</button>
+        </form>
+      </div>
+
+<%- include ('../partials/footer') %>
