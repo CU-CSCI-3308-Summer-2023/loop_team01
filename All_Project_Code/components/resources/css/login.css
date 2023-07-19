@@ -53,6 +53,14 @@ body{
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
     padding: 50px 35px;
 }
+#signUpfromLogin{
+
+    font-family: 'Poppins',sans-serif;
+    font-weight: 100;
+    background-color: white;
+    
+
+}
 #loginText{
 
     color: #ffffff;
