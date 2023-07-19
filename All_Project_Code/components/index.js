@@ -129,6 +129,20 @@ app.get("/search", (req, res) => {
   res.redirect("/?filter=" + req.query.filter);
 });
 
+app.get("/favorite", (req, res) => {
+  db.any(favorite_products, [req.session.user.user_id])
+  .then(favorite_products => {
+    res.render("pages/favorites", {
+      favorite_products,
+    });
+  })
+  .catch(err => {
+    res.render("pages/favorites", {
+      favorite_products: [],
+    });
+  })
+});
+
 app.post("/cart/add", (req, res) => {
   if (!req.session.user){
     res.redirect("/login");
@@ -185,44 +199,6 @@ app.post("/favorite/remove", (req, res) => {
 
 app.get("/login", (req, res) => {
   res.render("pages/login");
-});
-
-app.get("/carousel", (req, res) => {
-  res.render("pages/carousel");
-  if (!req.session.user){
-    db.any(all_products)
-    .then(products => {
-      res.render("pages/carousel", {
-        products,
-      });
-    })
-    .catch(err => {
-      res.render("pages/home", {
-        products: [],
-      });
-    });
-  }
-  else{
-    db.task('get-all', task => {
-      return task.batch([task.any(all_products), task.any(favorite_products, [req.session.user.user_id]), task.one(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
-    })
-    .then(products => {
-      res.render("pages/home", {
-        products: products[0],
-        favorite_products: products[1],
-        cart: products[2],
-        user_image: products[3],
-      });
-    })
-    .catch(err => {
-      res.render("pages/home", {
-        all_products: [],
-        favorite_products: [],
-        cart: [],
-        user_image: [],
-      });
-    });
-  }
 });
 
 app.get("/signUp", (req, res) => {
@@ -299,20 +275,6 @@ app.get("/cart", (req, res) => {
       });
     });
   }
-});
-
-app.patch('/updateCart/:userId/:productId', (req, res) => {
-  const { userId, productId } = req.params;
-  const { quantity } = req.body;
-  
-  pool.query('UPDATE cart_clothes SET quantity = $1 WHERE user_id = $2 AND product_id = $3', [quantity, userId, productId], (err) => {
-    if (err) {
-      // Handle error
-      res.json({ success: false, error: err.message });
-    } else {
-      res.json({ success: true });
-    }
-  });
 });
 
 app.get("/logout", (req, res) => {
