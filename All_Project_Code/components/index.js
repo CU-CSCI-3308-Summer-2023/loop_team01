@@ -263,6 +263,12 @@ app.get("/cart", (req, res) => {
   }
 });
 
+app.get("/user", (req, res) => {
+  res.render("pages/user", {
+    user: req.session.user,
+  });
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
