@@ -299,8 +299,9 @@ app.get("/favorites", (req, res) => {
 app.get("/carousel", (req, res) => {
   db.any(all_products, ['%'])
   .then(products => {
+    const random = Math.floor(Math.random() * products.length);
     res.render("pages/carousel", {
-      products,
+      products: products[random],
     });
   })
   .catch(err => {
