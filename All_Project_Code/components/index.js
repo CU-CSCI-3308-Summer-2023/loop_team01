@@ -184,7 +184,12 @@ app.post("/favorite/remove", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("pages/login");
+  if (!req.session.user){
+    res.render("pages/login");
+  }
+  else{
+    res.redirect("/user");
+  }
 });
 
 app.get("/signUp", (req, res) => {
@@ -275,56 +280,26 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/favorites", (req, res) => {
-
-  if (!req.session.user) {
+  if (!req.session.user){
     res.redirect("/login");
-  } else {
-    
-    var filter = '%';
-    if (req.query.name){
-      filter = req.query.name+'%';
-    }
-    if (!req.session.user){
-      db.any(all_products, [filter])
-      .then(products => {
-        res.render("pages/favorites", {
-          products,
-          favorite_products: [],
-          cart: [],
-          user_image: [],
-        });
-      })
-      .catch(err => {
-        res.render("pages/favorites", {
-          products: [],
-          favorite_products: [],
-          cart: [],
-          user_image: [],
-        });
+  }
+  else{
+    db.task('get-everyting', task => {
+      return task.batch([db.any(favorite_products, [req.session.user.user_id]), db.any(cart, [res.session.user.user_id])]);
+    })
+    .then(data => {
+      res.render("pages/favorites", {
+        favorite_products: data[0],
+        cart_products: data[1],
       });
-    }
-    else{
-      db.task('get-all', task => {
-        return task.batch([task.any(all_products, [filter]), task.any(favorite_products, [req.session.user.user_id]), task.any(cart, [req.session.user.user_id]), task.one(user_image, [req.session.user.user_id])]);
-      })
-      .then(products => {
-        res.render("pages/favorites", {
-          products: products[0],
-          favorite_products: products[1],
-          cart: products[2],
-          user_image: products[3],
-        });
-      })
-      .catch(err => {
-        res.render("pages/favorites", {
-          products: [],
-          favorite_products: [],
-          cart: [],
-          user_image: [],
-        });
+    })
+    .catch(err => {
+      res.render("pages/favorites", {
+        favorite_products: [],
+        cart_products: [],
       });
-    }
-  } 
+    });
+  }
 });
 
 app.get("/carousel", (req, res) => {
