@@ -60,3 +60,17 @@ body{
 
 }
 
+#fileInput{
+
+    padding-top: 100px;
+    padding-left: 50px;
+    padding-right: 200px;
+    color: rgb(255, 255, 255);
+
+}
+
+#fileInput input {
+
+    width: fit-content;
+
+}
