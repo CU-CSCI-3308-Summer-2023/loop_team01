@@ -283,14 +283,14 @@ app.get("/favorites", (req, res) => {
     })
     .then(data => {
       res.render("pages/favorites", {
-        favorite_products: data[0],
-        cart_products: data[1],
+        products: data[0],
+        cart: data[1],
       });
     })
     .catch(err => {
       res.render("pages/favorites", {
-        favorite_products: [],
-        cart_products: [],
+        products: [],
+        cart: [],
       });
     });
   }
