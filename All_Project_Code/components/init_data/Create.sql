@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(30) NOT NULL,
     username VARCHAR(30) NOT NULL UNIQUE,
     email VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password CHAR(100) NOT NULL,
     admin BOOLEAN NOT NULL,
     image_url VARCHAR(100)
 );

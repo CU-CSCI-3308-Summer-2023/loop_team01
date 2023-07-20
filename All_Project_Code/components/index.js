@@ -6,7 +6,7 @@ const pgp = require('pg-promise')();
 const path = require("path");
 require('dotenv').config();
 const session = require("express-session");
-//const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const { brotliDecompress } = require('zlib');
 
 // defining the Express app
@@ -196,57 +196,51 @@ app.get("/signUp", (req, res) => {
   res.render("pages/signUp");
 });
 
-app.post("/login", (req, res) => {
-  const query = `SELECT * FROM users WHERE username='${req.body.username}' AND password='${req.body.password}'`;
+app.post("/login", async (req, res) => {
+  const query = `SELECT * FROM users WHERE username='${req.body.username}'`;
+  
+  const data = await db.any(query);
+  if (data.length === 0){
+    res.redirect("/signUp");
+  }
+  else{
+    const match = bcrypt.compare(req.body.password, data[0].password);
+    if (match){
+      user.user_id = data[0].user_id;
+      user.first_name = data[0].first_name;
+      user.last_name = data[0].last_name;
+      user.username = data[0].username;
+      user.email = data[0].email;
+      user.password = data[0].password;
+      user.admin = data[0].admin;
+      user.image_url = data[0].image_url;
 
-  db.one(query)
-  .then(data => {
-    user.user_id = data.user_id;
-    user.first_name = data.first_name;
-    user.last_name = data.last_name;
-    user.username = data.username;
-    user.email = data.email;
-    user.password = data.password;
-    user.admin = data.admin;
-    user.image_url = data.image_url;
-
-    req.session.user = user;
-    req.session.save();
-    res.redirect("/");
-  })
-  .catch(err => {
-    res.redirect("pages/login")
-  });
+      req.session.user = user;
+      req.session.save();
+      res.redirect("/");
+    } 
+    else{
+      res.redirect("/login");
+    }
+  }
 });
 
 
-app.post("/signUp", (req, res) => {
+app.post("/signUp", async (req, res) => {
   var newUser = `SELECT username FROM users WHERE username='${req.body.username}'`;
-  db.any(newUser)
-  .then(user => {
-    if (user[0]){
-      res.redirect("/signUp", {
-        message: "username taken"
-      });
-    }
-    else{
-      newUser = `INSERT INTO users (first_name, last_name, username, email, password, admin, image_url)
-      VALUES ('First', 'Last', '${req.body.username}', '${req.body.email}', '${req.body.password}', false, 'images/default.png')`;
-
-      db.none(newUser)
-      .then(() => {
-        res.redirect("/login");
-      })
-      .catch(err => {
-        console.log(err);
-        res.redirect("/signUp");
-      });
-    }
-  })
-  .catch(err => {
-    console.log(err);
+  const user = await db.any(newUser);
+    
+  if (user.length === 1){
     res.redirect("/signUp");
-  });
+  }
+  else{
+    const hash = await bcrypt.hash(req.body.password, 10);
+    newUser = `INSERT INTO users (first_name, last_name, username, email, password, admin, image_url)
+    VALUES ('First', 'Last', $1, $2, $3, false, 'images/default.png')`;
+
+    const user = await db.none(newUser, [req.body.username, req.body.email, hash]);
+    res.redirect("/login");
+  }
 });
 
 app.get("/cart", (req, res) => {
