@@ -8,6 +8,7 @@ require('dotenv').config();
 const session = require("express-session");
 const bcrypt = require('bcrypt');
 const { brotliDecompress } = require('zlib');
+const { markAsUntransferable } = require('worker_threads');
 
 // defining the Express app
 const app = express();
@@ -268,8 +269,32 @@ app.get("/user", (req, res) => {
   });
 });
 
+app.post("/user", async (req, res) => {
+  var query = `UPDATE users SET first_name=$1, last_name=$2, username=$3, email=$4, password=$5 WHERE user_id=${req.session.user.user_id}`;
+  console.log(req.body);
+  if (req.body.first_name != ''){
+    req.session.user.first_name = req.body.first_name;
+  }
+  if (req.body.last_name != ''){
+    req.session.user.last_name = req.body.last_name;
+  }
+  if (req.body.username != ''){
+    req.session.user.username = req.body.username;
+  }
+  if (req.body.email != ''){
+    req.session.user.email = req.body.email;
+  }
+  if (req.body.password != ''){
+    const hash = await bcrypt.hash(req.body.password, 10);
+    req.session.user.password = hash;
+  }
+  req.session.save();
+  await db.none(query, [req.session.user.first_name, req.session.user.last_name, req.session.user.username, req.session.user.email, req.session.user.password]);
+  res.redirect('/user');
+});
+
 app.get("/logout", (req, res) => {
-  req.session.destroy();
+  req.session.destroy(); 
   res.redirect("/");
 });
 
