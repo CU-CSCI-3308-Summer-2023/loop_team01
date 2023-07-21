@@ -137,7 +137,7 @@ app.post("/cart/add", (req, res) => {
   else{
     db.none(add_to_cart, [req.session.user.user_id, req.body.product_id])
     .then(() => {
-      res.redirect("/");
+      res.redirect("/cart");
     })
     .catch(err => {
       res.redirect("/");
@@ -164,7 +164,7 @@ app.post("/favorite/add", (req, res) => {
   else{
     db.none(add_to_favorites, [req.session.user.user_id, req.body.product_id])
     .then(() => {
-      res.redirect("/");
+      res.redirect("/favorites");
     })
     .catch(err => {
       res.redirect("/");
@@ -322,26 +322,48 @@ app.get("/favorites", (req, res) => {
 });
 
 app.get("/carousel", (req, res) => {
-  db.task('get-random', task => {
-    return task.batch([db.any(all_products, ['%']), db.any(cart, [req.session.user.user_id]), db.any(favorite_products, [req.session.user.user_id])]);
-  })
-  .then(data => {
-    const random = Math.floor(Math.random() * data[0].length);
-    console.log(data[0]);
-    res.render("pages/carousel", {
-      products: data[0],
-      random,
-      cart: data[1],
-      favorite_products: data[2],
+  if (!req.session.user){
+    db.any(all_products, ['%'])
+    .then(products => {
+      const random = Math.floor(Math.random() * products.length);
+      res.render("pages/carousel", {
+        products,
+        random,
+        cart: [],
+        favorite_products: [],
+      });
+    })
+    .catch(err => {
+      res.render("pages/carousel", {
+        products: [],
+        random,
+        cart: [],
+        favorite_products: [],
+      });
     });
-  })
-  .catch(err => {
-    res.render("pages/carousel", {
-      products: [],
-      cart: [],
-      favorite_products: [],
+  }
+  else{
+    db.task('get-random', task => {
+      return task.batch([db.any(all_products, ['%']), db.any(cart, [req.session.user.user_id]), db.any(favorite_products, [req.session.user.user_id])]);
+    })
+    .then(data => {
+      const random = Math.floor(Math.random() * data[0].length);
+      console.log(data[0]);
+      res.render("pages/carousel", {
+        products: data[0],
+        random,
+        cart: data[1],
+        favorite_products: data[2],
+      });
+    })
+    .catch(err => {
+      res.render("pages/carousel", {
+        products: [],
+        cart: [],
+        favorite_products: [],
+      });
     });
-  });
+  }
 });
 
 app.get("/add", (req, res) => {
