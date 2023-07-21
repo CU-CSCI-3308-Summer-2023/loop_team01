@@ -271,7 +271,7 @@ app.get("/user", (req, res) => {
 
 app.post("/user", async (req, res) => {
   var query = `UPDATE users SET first_name=$1, last_name=$2, username=$3, email=$4, password=$5 WHERE user_id=${req.session.user.user_id}`;
-  console.log(req.body);
+
   if (req.body.first_name != ''){
     req.session.user.first_name = req.body.first_name;
   }
@@ -348,7 +348,6 @@ app.get("/carousel", (req, res) => {
     })
     .then(data => {
       const random = Math.floor(Math.random() * data[0].length);
-      console.log(data[0]);
       res.render("pages/carousel", {
         products: data[0],
         random,
@@ -371,7 +370,7 @@ app.get("/add", (req, res) => {
     res.redirect("/login");
   }
   else{
-    res.render("pages/add_product");
+    res.render("pages/add_product"); 
   }
 });
 
@@ -382,6 +381,7 @@ app.post("/add", (req, res) => {
     res.redirect('/');
   })
   .catch(err => {
+    console.log(err);
     res.redirect('/add');
   });
 });
