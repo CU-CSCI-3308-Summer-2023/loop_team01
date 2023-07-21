@@ -345,6 +345,17 @@ app.get("/add", (req, res) => {
   }
 });
 
+app.post("/add", (req, res) => {
+  var query = `INSERT INTO products (name, description, size, price, image_url, user_id) VALUES ($1,$2,$3,$4,$5,${req.session.user.user_id})`;
+  db.none(query, [req.body.name, req.body.description, req.body.size, req.body.price, req.body.image_url])
+  .then(() => {
+    res.redirect('/');
+  })
+  .catch(err => {
+    res.redirect('/add');
+  });
+});
+
 // Listening on port 4000
 app.listen(4000, () => {
   console.log('listening on port 4000');
