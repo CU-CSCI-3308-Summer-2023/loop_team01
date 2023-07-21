@@ -1,11 +1,12 @@
-.carousel{
-
-    padding-top: 80px;
-
+#carousel-page {
+    margin-top: 75px
 }
 
-.carousel img{
+#carousel-img {
+    width: 730px;
+    height: 550px;
+}
 
-    max-height: 650px;
-
+.carousel-inner img {
+    margin: auto;
 }

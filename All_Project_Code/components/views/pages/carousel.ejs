@@ -2,29 +2,43 @@
 <%- include ('../partials/secondary_menu') %>
 
         <!-- Carousel -->
-        <div class="container mt-3">
-            <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-              <ol class="carousel-indicators">
-                <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"></li>
-                <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"></li>
-                <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"></li>
-              </ol>
+        <div class="container" id="carousel-page">
+          <div id="carouselExampleIndicators" class="carousel slide">
+              <div class="carousel-indicators mb-3">
+                <form action="/cart/add" method="POST" class="mr-auto ml-auto">
+                  <input type="submit" value="add to cart" class="btn btn-outline-success" 
+                  <% if (locals.cart.length != 0){
+                      for (var j = 0; j < locals.cart.length; j++){
+                          if (locals.cart[j].product_id == locals.products[locals.random].product_id){ %>
+                              disabled
+                          <% }
+                      }
+                  } %>
+                  >
+                  <input type="hidden" name="product_id" value=<%=locals.products[locals.random].product_id%>>
+                </form>
+                <form action="/carousel" method="GET" class="mr-auto ml-auto">
+                  <input type="submit" value="randomize" class="btn btn-outline-danger">
+                </form>
+                <form action="/favorite/add" method="POST" class="mr-auto ml-auto">
+                  <input type="submit" value="favorite" class="btn btn-outline-warning"
+                  <% if (locals.favorite_products.length != 0){
+                      for (var j = 0; j < locals.favorite_products.length; j++){
+                          if (locals.favorite_products[j].product_id == locals.products[locals.random].product_id){ %>
+                              disabled
+                          <% }
+                      }
+                  } %>
+                  >
+                  <input type="hidden" name="product_id" value=<%=locals.products[locals.random].product_id%>>
+              </form>
+              </div>
               <div class="carousel-inner">
                 <div class="carousel-item active">
-                  <img src=<%=locals.products.image_url%> class="d-block w-100" alt="...">
-                  <div class="carousel-caption d-none d-md-block">
-                    <h5 style="color: black;"><%=locals.products.name%></h5>
-                  </div>
+                  <img src=<%=locals.products[locals.random].image_url%> class="d-block w-80" alt="Slide 1" id="carousel-img">
                 </div>
               </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-              </button>
-            </div>
           </div>
+      </div>
+
 <%- include ('../partials/footer') %>

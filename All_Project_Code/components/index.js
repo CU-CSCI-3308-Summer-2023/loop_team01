@@ -322,16 +322,24 @@ app.get("/favorites", (req, res) => {
 });
 
 app.get("/carousel", (req, res) => {
-  db.any(all_products, ['%'])
-  .then(products => {
-    const random = Math.floor(Math.random() * products.length);
+  db.task('get-random', task => {
+    return task.batch([db.any(all_products, ['%']), db.any(cart, [req.session.user.user_id]), db.any(favorite_products, [req.session.user.user_id])]);
+  })
+  .then(data => {
+    const random = Math.floor(Math.random() * data[0].length);
+    console.log(data[0]);
     res.render("pages/carousel", {
-      products: products[random],
+      products: data[0],
+      random,
+      cart: data[1],
+      favorite_products: data[2],
     });
   })
   .catch(err => {
     res.render("pages/carousel", {
       products: [],
+      cart: [],
+      favorite_products: [],
     });
   });
 });
