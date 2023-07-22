@@ -60,3 +60,17 @@ body{
 
 }
 
+#cart_container{
+    margin-top: 100px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(255,255,255,0.13);
+    border-collapse: separate;
+}
+
+#cart-item-img{
+    height: 60px;
+}
+
+#cart-item-img:hover{
+    opacity: 0.5;
+}

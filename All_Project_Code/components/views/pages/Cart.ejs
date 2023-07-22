@@ -1,33 +1,68 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/secondary_menu') %>
 
-<div class="container">
-    <h1>Your Shopping Cart</h1>
+<div class="container" id="cart_container">
     <% if (cartItems.length === 0) { %>
-        <p>Your cart is currently empty.</p>
+        <p id="empty">Your cart is currently empty.</p>
     <% } else { %>
-        <table>
+        <table id="table">
+            <h1 id="cart_heading">Your Shopping Cart</h1>
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Price</th>
+                    <th id="table-product">Product</th>
+                    <th id="table-img"></th>
+                    <th id="table-price">Price</th>
                 </tr>
             </thead>
+            <colgroup>
+                <col span="1" style="width: 20%;">
+                <col span="1" style="width: 50%;">
+                <col span="1" style="width: 30%;">
+              </colgroup>
             <tbody>
                 <% let grandTotal = 0; %>
                 <% cartItems.forEach(function(item) { %>
-                    <% grandTotal += item.price; %>
+                    <% grandTotal += parseInt(item.price); %>
 
                     <tr>
-                        <td><%= item.name %></td>
-                        <td><%= item.price %></td>
+                        
+                        <td id="table-item-name"><%= item.name %></td>
+                        <td id="table-item-img">
+                            <img src="<%= item.image_url %>" alt="<%= item.name %>" id="cart-item-img">
+                        </td>
+                        <td id="table-item-price">$<%= item.price %></td>
+                        <td id="table-button">
+                            <form action="/cart/remove" method="POST" class="mr-1 ml-1">
+                                <input type="hidden" value="<%= item.product_id %>">
+                                <button class="btn btn-danger" type="submit" value="remove from cart">Remove</button>
+
+                            </form>
+                        </td>
                     </tr>
                 <% }) %>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3">Total:</td>
-                    <td><%= grandTotal %></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="3">Total: $<%= grandTotal %></td>
+                    <td></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <!-- add a continue shopping form and button -->  
+                        <a href="/" class="btn btn-info" role="button">Continue Shopping</a>
+                   
+                    </td>
+                    <td>
+                        <form method="POST" action="/checkout">
+                            <button class="btn btn-success" type="submit">Checkout</button>
+                        </form>
+                    </td>
+
                 </tr>
             </tfoot>
         </table>
