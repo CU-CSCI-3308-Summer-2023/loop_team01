@@ -173,9 +173,22 @@ app.get("/login", (req, res) => {
   res.render("pages/login");
 });
 
+
 app.get('/favorites', (req, res) => {
-  res.render('pages/favorites', { favorites: favorite_products });
+  if (!req.session.user) {
+    res.redirect('/login');
+  } else {
+    db.any(favorite_products, [req.session.user.user_id])
+      .then(favorites => {
+        res.render('pages/favorites', { favorites });
+      })
+      .catch(err => {
+        console.log(err);
+        res.render('pages/favorites', { favorites: [] });
+      });
+  }
 });
+
 
 
 app.get("/carousel", (req, res) => {
