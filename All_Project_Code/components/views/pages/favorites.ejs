@@ -1,6 +1,51 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/main_menu') %>
 
-         
+<div class="container" style="max-width: 80%;">
+    <div class="row mt-5"></div>
+    <div class="row mt-5 mb-5 text-center">
+        <% for (var i = 0; i < favorites.length; i++) { %>
+            <div class="col">
+                <div class="card mb-3" style="width: 18rem; height: 400px; border-width: 3px;">
+                    <img src="<%= favorites[i].image_url %>" class="card-img-top rounded p-1" style="height: 175px;">
+                    <div class="card-body">
+                        <h3><%= favorites[i].name %></h3>
+                        <p class="card-text">
+                            <%= favorites[i].description %>
+                        </p>
+                        <div class="row">
+                            <p class="card-text mr-auto ml-auto">
+                                Size: <%=favorites[i].size%>
+                            </p>
+                            <p class="card-text mr-auto ml-auto">
+                                Price: $<%=favorites[i].price%>
+                            </p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <form action="/cart/add" method="POST" class="mr-1 ml-1">
+                                <input type="submit" value="add to cart" class="btn btn-outline-success" 
+                                <% if (locals.cart.length != 0) {
+                                    for (var j = 0; j < locals.cart.length; j++) {
+                                        if (locals.cart[j].product_id == favorites[i].product_id) { %>
+                                            disabled
+                                        <% }
+                                    }
+                                } %>
+                                >
+                                <input type="hidden" name="product_id" value="<%= favorites[i].product_id %>">
+                            </form>
+                            <form action="/favorite/remove" method="POST" class="mr-1 ml-1">
+                                <input type="submit" value="remove" class="btn btn-outline-danger">
+                                <input type="hidden" name="product_id" value="<%= favorites[i].product_id %>">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
 
 <%- include ('../partials/footer') %>
+
+

@@ -60,6 +60,7 @@ body{
 
 }
 
+<<<<<<< HEAD
 #cart_container{
     margin-top: 100px;
     color: rgb(255, 255, 255);
@@ -90,4 +91,41 @@ body{
     color: rgb(255, 255, 255);
     align-items: center;
     margin: auto;
+=======
+#fileInput{
+
+    padding-top: 100px;
+    padding-left: 50px;
+    padding-right: 200px;
+    color: rgb(255, 255, 255);
+
+}
+
+#fileInput input {
+
+    width: fit-content;
+
+}
+
+#contact-page{
+    max-width: 80%;
+    margin: 40px auto; 
+    margin-top: 100px;
+    text-align: center;
+    color: white;
+}
+
+#contact-header{
+    text-align: center;
+}
+
+#contact-info{
+    text-align: center;
+}
+
+#contact-image{
+    max-width: 100%;
+    height: auto;
+    margin-top: 20px;
+>>>>>>> main
 }
