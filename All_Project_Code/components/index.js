@@ -172,6 +172,16 @@ app.post("/favorite/add", (req, res) => {
   }
 });
 
+app.get("/about", (req, res) => {
+  req.session.destroy();
+  res.render("pages/about");
+});
+
+app.get("/contact", (req, res) => {
+  req.session.destroy();
+  res.render("pages/contact");
+});
+
 app.post("/favorite/remove", (req, res) => {
   var query = `DELETE FROM favorite_products WHERE user_id=$1 AND product_id=$2`;
 
@@ -185,6 +195,29 @@ app.post("/favorite/remove", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  res.render("pages/login");
+});
+
+
+app.get('/favorites', (req, res) => {
+  if (!req.session.user) {
+    res.redirect('/login');
+  } else {
+    db.any(favorite_products, [req.session.user.user_id])
+      .then(favorites => {
+        res.render('pages/favorites', { favorites });
+      })
+      .catch(err => {
+        console.log(err);
+        res.render('pages/favorites', { favorites: [] });
+      });
+  }
+});
+
+
+
+app.get("/carousel", (req, res) => {
+  res.render("pages/carousel");
   if (!req.session.user){
     res.render("pages/login");
   }

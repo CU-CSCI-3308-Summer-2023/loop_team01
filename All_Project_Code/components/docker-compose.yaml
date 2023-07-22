@@ -10,6 +10,4 @@ services:
       - '4000:4000'
     volumes:
       - ./:/home/node/app
-    command: >
-      sh -c "chmod -R 777 /home/node/app &&
-             npm start"
+    command: npm start
