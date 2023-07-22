@@ -57,7 +57,7 @@ app.use(
   })
 );
 
-const user= {
+const user = { 
   user_id: undefined,
   first_name: undefined,
   last_name: undefined,

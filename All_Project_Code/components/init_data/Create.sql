@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(50) NOT NULL,
     password CHAR(100) NOT NULL,
     admin BOOLEAN NOT NULL,
-    image_url CHAR(500)
+    image_url CHAR(1000)
 );
 
 DROP TABLE IF EXISTS products CASCADE;
