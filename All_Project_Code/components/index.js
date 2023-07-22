@@ -169,13 +169,15 @@ app.post("/checkout", (req, res) => {
 });
 
 app.post("/cart/remove", (req, res) => {
-  let remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
-
+  console.log("endpoint reached");
+  var remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
+  console.log(req.body.product_id);
   db.none(remove_from_cart, [req.session.user.user_id, req.body.product_id])
   .then(() => {
     res.redirect("/cart");
   })
   .catch(err => {
+    console.log(err);
     res.redirect("/cart");
   });
 });
@@ -418,6 +420,6 @@ app.get("/contact", (req, res) => {
   res.render("pages/contact");
 });
 
-app.listen(80, () => {
-  console.log('listening on port 80');
+app.listen(4000, () => {
+  console.log('listening on port 4000');
 });
