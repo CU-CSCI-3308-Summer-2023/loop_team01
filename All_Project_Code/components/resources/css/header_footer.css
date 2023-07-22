@@ -78,7 +78,9 @@ body{
 #contact-page{
     max-width: 80%;
     margin: 40px auto; 
+    margin-top: 100px;
     text-align: center;
+    color: white;
 }
 
 #contact-header{
