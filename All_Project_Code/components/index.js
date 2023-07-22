@@ -76,7 +76,7 @@ WHERE cart.user_id=$1`;
 const user_image = `SELECT image_url FROM users WHERE user_id=$1`;
 const add_to_cart = `INSERT INTO cart (user_id, product_id) VALUES ($1, $2)`;
 const add_to_favorites = `INSERT INTO favorite_products (user_id, product_id) VALUES ($1, $2)`;
-const remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
+
 // <!-- Endpoint 1 :  Default endpoint ("/") -->
 app.get('/', (req, res) => {
   var filter = '%';
@@ -149,12 +149,26 @@ app.get("/checkout", (req, res) => {
     res.redirect("/login");
   }
   else{
-    res.render("pages/checkout");
-  }
+      res.render("pages/checkout");
+    }
+});
+
+app.post("/checkout", (req, res) => {
+  db.any(cart, [req.session.user.user_id])
+    .then(cartItems => {
+      res.render("pages/checkout", {
+        cartItems,
+      });
+    })
+    .catch(err => {
+      res.render("pages/checkout", {
+        cartItems: [],
+      });
+    });
 });
 
 app.post("/cart/remove", (req, res) => {
-  
+  let remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
 
   db.none(remove_from_cart, [req.session.user.user_id, req.body.product_id])
   .then(() => {

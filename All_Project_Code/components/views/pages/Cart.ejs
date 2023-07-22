@@ -32,7 +32,7 @@
                         </td>
                         <td id="table-item-price">$<%= item.price %></td>
                         <td id="table-button">
-                            <form action="/cart/remove" method="POST" class="mr-1 ml-1">
+                            <form action="/cart/remove" method="POST">
                                 <input type="hidden" value="<%= item.product_id %>">
                                 <button class="btn btn-danger" type="submit" value="remove from cart">Remove</button>
 
