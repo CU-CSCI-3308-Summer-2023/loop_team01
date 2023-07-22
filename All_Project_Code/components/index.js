@@ -153,23 +153,24 @@ app.get("/checkout", (req, res) => {
     }
 });
 
+//add an endpoint for the checkout which deletes the cart
+
+
 app.post("/checkout", (req, res) => {
   db.any(cart, [req.session.user.user_id])
     .then(cartItems => {
       res.render("pages/checkout", {
-        cartItems,
       });
     })
     .catch(err => {
       res.render("pages/checkout", {
-        cartItems: [],
       });
     });
 });
 
 app.post("/cart/remove", (req, res) => {
-  let remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
-
+  let remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2;`;
+  console.log(req.body.product_id);
   db.none(remove_from_cart, [req.session.user.user_id, req.body.product_id])
   .then(() => {
     res.redirect("/cart");
