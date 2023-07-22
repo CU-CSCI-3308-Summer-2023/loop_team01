@@ -60,7 +60,6 @@ body{
 
 }
 
-<<<<<<< HEAD
 #cart_container{
     margin-top: 100px;
     color: rgb(255, 255, 255);
@@ -91,7 +90,8 @@ body{
     color: rgb(255, 255, 255);
     align-items: center;
     margin: auto;
-=======
+}
+
 #fileInput{
 
     padding-top: 100px;
@@ -127,5 +127,4 @@ body{
     max-width: 100%;
     height: auto;
     margin-top: 20px;
->>>>>>> main
 }
