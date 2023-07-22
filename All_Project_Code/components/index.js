@@ -238,7 +238,7 @@ app.post("/login", (req, res) => {
     res.redirect("/");
   })
   .catch(err => {
-    res.redirect("pages/login")
+    res.redirect("/login")
   });
 });
 
