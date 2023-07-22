@@ -172,52 +172,19 @@ app.post("/favorite/add", (req, res) => {
   }
 });
 
-app.get("/about", (req, res) => {
-  req.session.destroy();
-  res.render("pages/about");
-});
-
-app.get("/contact", (req, res) => {
-  req.session.destroy();
-  res.render("pages/contact");
-});
-
 app.post("/favorite/remove", (req, res) => {
   var query = `DELETE FROM favorite_products WHERE user_id=$1 AND product_id=$2`;
 
   db.none(query, [req.session.user.user_id, req.body.product_id])
   .then(() => {
-    res.redirect("/favorite");
+    res.redirect("/favorites");
   })
   .catch(err => {
-    res.redirect("/favorite");
+    res.redirect("/favorites");
   });
 });
 
 app.get("/login", (req, res) => {
-  res.render("pages/login");
-});
-
-
-app.get('/favorites', (req, res) => {
-  if (!req.session.user) {
-    res.redirect('/login');
-  } else {
-    db.any(favorite_products, [req.session.user.user_id])
-      .then(favorites => {
-        res.render('pages/favorites', { favorites });
-      })
-      .catch(err => {
-        console.log(err);
-        res.render('pages/favorites', { favorites: [] });
-      });
-  }
-});
-
-
-
-app.get("/carousel", (req, res) => {
-  res.render("pages/carousel");
   if (!req.session.user){
     res.render("pages/login");
   }
@@ -303,7 +270,7 @@ app.get("/user", (req, res) => {
 });
 
 app.post("/user", async (req, res) => {
-  var query = `UPDATE users SET first_name=$1, last_name=$2, username=$3, email=$4, password=$5 WHERE user_id=${req.session.user.user_id}`;
+  var query = `UPDATE users SET first_name=$1, last_name=$2, username=$3, email=$4, password=$5, image_url=$6 WHERE user_id=${req.session.user.user_id}`;
 
   if (req.body.first_name != ''){
     req.session.user.first_name = req.body.first_name;
@@ -321,8 +288,11 @@ app.post("/user", async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 10);
     req.session.user.password = hash;
   }
+  if (req.body.image_url != ''){
+    req.session.user.image_url = req.body.image_url;
+  }
   req.session.save();
-  await db.none(query, [req.session.user.first_name, req.session.user.last_name, req.session.user.username, req.session.user.email, req.session.user.password]);
+  await db.none(query, [req.session.user.first_name, req.session.user.last_name, req.session.user.username, req.session.user.email, req.session.user.password, req.session.user.image_url]);
   res.redirect('/user');
 });
 
@@ -337,19 +307,17 @@ app.get("/favorites", (req, res) => {
   }
   else{
     db.task('get-everyting', task => {
-      return task.batch([db.any(favorite_products, [req.session.user.user_id]), db.any(cart, [res.session.user.user_id])]);
+      return task.batch([db.any(favorite_products, [req.session.user.user_id]), db.any(cart, [req.session.user.user_id])]);
     })
     .then(data => {
       res.render("pages/favorites", {
-        products: data[0],
+        favorites: data[0],
         cart: data[1],
       });
     })
     .catch(err => {
-      res.render("pages/favorites", {
-        products: [],
-        cart: [],
-      });
+      console.log(err);
+      res.redirect("/");
     });
   }
 });
@@ -417,6 +385,14 @@ app.post("/add", (req, res) => {
     console.log(err);
     res.redirect('/add');
   });
+});
+
+app.get("/about", (req, res) => {
+  res.render("pages/about")
+});
+
+app.get("/contact", (req, res) => {
+  res.render("pages/contact");
 });
 
 // Listening on port 4000
