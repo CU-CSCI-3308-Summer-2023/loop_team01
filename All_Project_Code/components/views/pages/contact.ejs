@@ -1,53 +1,21 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Contact Us</title>
-    <style>
-        .container {
-            max-width: 80%;
-            margin: 40px auto; 
-            text-align: center;
-        }
-
-        .container h1 {
-            text-align: center;
-        }
-
-        .container p {
-            text-align: center;
-        }
-        .contact-image {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-
 <%- include('../partials/header') %>
 <%- include('../partials/main_menu') %>
-<body>
 
-    <div class="container">
+    <div class="container" id="contact-page">
         <div class="row mt-5">
-            <h1>Contact Us</h1>
-            <p>
+            <h1 id="contact-header">Contact Us</h1>
+            <p id="contact-info">
                 You can contact us using the following methods:
                 Email: customerservice@gmai.com<br>
                 Phone: 800-700-6000<br>
                 Address: 123 Main Street Boulder CO 80303
             </p>
             <!-- Add the image here -->
-            <img src="https://assets.simpleviewinc.com/simpleview/image/upload/c_limit,h_1200,q_75,w_1200/v1/clients/boulder/DJI_0842_7d6b41d5-5775-4f3b-a3e7-3c1f635abe3f.jpg" alt="Contact Image" class="contact-image">
+            <img src="https://assets.simpleviewinc.com/simpleview/image/upload/c_limit,h_1200,q_75,w_1200/v1/clients/boulder/DJI_0842_7d6b41d5-5775-4f3b-a3e7-3c1f635abe3f.jpg" alt="Contact Image" class="contact-image" id="contact-image">
         </div>
     </div>
 
-    <%- include('../partials/footer') %>
-
-</body>
-
-</html>
+<%- include('../partials/footer') %>
 
 
 
