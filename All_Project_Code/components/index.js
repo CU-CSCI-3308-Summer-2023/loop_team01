@@ -428,6 +428,6 @@ app.get("/contact", (req, res) => {
   res.render("pages/contact");
 });
 
-app.listen(4000, () => {
-  console.log('listening on port 4000');
+app.listen(80, () => {
+  console.log('listening on port 80');
 });
