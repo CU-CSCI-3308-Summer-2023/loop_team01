@@ -67,6 +67,15 @@ body{
     border-collapse: separate;
 }
 
+#checkout-container{
+    margin-top: 100px;
+    margin-bottom: 100px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-color: rgba(255,255,255,0.13);
+    border-collapse: separate;
+}
+
 #cart-item-img{
     height: 60px;
 }

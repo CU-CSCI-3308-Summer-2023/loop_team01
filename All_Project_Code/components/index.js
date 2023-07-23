@@ -145,27 +145,37 @@ app.post("/cart/add", (req, res) => {
   }
 });
 
+app.post("/cart/empty", (req, res) => {
+  console.log("endpoint reached");
+  var empty_cart = `DELETE FROM cart`;
+  db.none(empty_cart, [req.session.user.user_id])
+  .then(() => {
+    res.redirect("/");
+  })
+  .catch(err => {
+    console.log(err);
+    res.redirect("/");
+  });
+});
+
+app.post("/cart/checkout/empty", (req, res) => {
+  console.log("endpoint reached");
+  var empty_cart = `DELETE FROM cart`;
+  db.none(empty_cart, [req.session.user.user_id])
+  .then(() => {
+    res.redirect("/checkout");
+  })
+  .catch(err => {
+    console.log(err);
+    res.redirect("/checkout");
+  });
+});
+
 app.get("/checkout", (req, res) => {
   if (!req.session.user){
     res.redirect("/login");
   }
-  else{
-      res.render("pages/checkout");
-    }
-});
-
-app.post("/checkout", (req, res) => {
-  db.any(cart, [req.session.user.user_id])
-    .then(cartItems => {
-      res.render("pages/checkout", {
-        cartItems,
-      });
-    })
-    .catch(err => {
-      res.render("pages/checkout", {
-        cartItems: [],
-      });
-    });
+  res.render("pages/checkout");
 });
 
 app.post("/cart/remove", (req, res) => {
