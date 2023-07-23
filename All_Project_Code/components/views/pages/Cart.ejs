@@ -6,12 +6,17 @@
         <p id="empty">Your cart is currently empty.</p>
     <% } else { %>
         <table id="table">
-            <h1 id="cart_heading">Your Shopping Cart</h1>
+            <h1 id="cart_heading">Your Selected Items</h1>
             <thead>
                 <tr>
                     <th id="table-product">Product</th>
                     <th id="table-img"></th>
                     <th id="table-price">Price</th>
+                    <th>
+                        <form method="POST" action="/cart/empty">
+                            <button class="btn btn-outline-warning" type="submit">Empty Bag</button>
+                        </form>
+                    </th>
                 </tr>
             </thead>
             <colgroup>
@@ -33,8 +38,8 @@
                         <td id="table-item-price">$<%= item.price %></td>
                         <td id="table-button">
                             <form action="/cart/remove" method="POST">
-                                <input type="hidden" value="<%= item.product_id %>">
-                                <button class="btn btn-danger" type="submit" value="remove from cart">Remove</button>
+                                <input type="hidden" name="product_id" value=<%= item.product_id %>>
+                                <button class="btn btn-outline-danger" type="submit" value="remove from cart">Remove</button>
 
                             </form>
                         </td>
@@ -54,12 +59,12 @@
                     <td></td>
                     <td>
                         <!-- add a continue shopping form and button -->  
-                        <a href="/" class="btn btn-info" role="button">Continue Shopping</a>
+                        <a href="/" class="btn btn-outline-info" role="button">Continue Shopping</a>
                    
                     </td>
                     <td>
-                        <form method="POST" action="/checkout">
-                            <button class="btn btn-success" type="submit">Checkout</button>
+                        <form method="POST" action="/cart/checkout/empty">
+                            <button class="btn btn-outline-success" type="submit">Checkout</button>
                         </form>
                     </td>
 

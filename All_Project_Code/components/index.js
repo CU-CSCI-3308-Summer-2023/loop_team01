@@ -6,8 +6,9 @@ const pgp = require('pg-promise')();
 const path = require("path");
 require('dotenv').config();
 const session = require("express-session");
-//const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const { brotliDecompress } = require('zlib');
+const { markAsUntransferable } = require('worker_threads');
 
 // defining the Express app
 const app = express();
@@ -56,7 +57,7 @@ app.use(
   })
 );
 
-const user= {
+const user = { 
   user_id: undefined,
   first_name: undefined,
   last_name: undefined,
@@ -136,46 +137,57 @@ app.post("/cart/add", (req, res) => {
   else{
     db.none(add_to_cart, [req.session.user.user_id, req.body.product_id])
     .then(() => {
-      res.redirect("/");
+      res.redirect("/cart");
     })
     .catch(err => {
       res.redirect("/");
     });
   }
+});
+
+app.post("/cart/empty", (req, res) => {
+  console.log("endpoint reached");
+  var empty_cart = `DELETE FROM cart`;
+  db.none(empty_cart, [req.session.user.user_id])
+  .then(() => {
+    res.redirect("/");
+  })
+  .catch(err => {
+    console.log(err);
+    res.redirect("/");
+  });
+});
+
+app.post("/cart/checkout/empty", (req, res) => {
+  console.log("endpoint reached");
+  var empty_cart = `DELETE FROM cart`;
+  db.none(empty_cart, [req.session.user.user_id])
+  .then(() => {
+    res.redirect("/checkout");
+  })
+  .catch(err => {
+    console.log(err);
+    res.redirect("/checkout");
+  });
 });
 
 app.get("/checkout", (req, res) => {
   if (!req.session.user){
     res.redirect("/login");
   }
-  else{
-      res.render("pages/checkout");
-    }
-});
-
-//add an endpoint for the checkout which deletes the cart
-
-
-app.post("/checkout", (req, res) => {
-  db.any(cart, [req.session.user.user_id])
-    .then(cartItems => {
-      res.render("pages/checkout", {
-      });
-    })
-    .catch(err => {
-      res.render("pages/checkout", {
-      });
-    });
+  res.render("pages/checkout");
 });
 
 app.post("/cart/remove", (req, res) => {
-  let remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2;`;
+  console.log("endpoint reached");
+  var remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
   console.log(req.body.product_id);
   db.none(remove_from_cart, [req.session.user.user_id, req.body.product_id])
   .then(() => {
     res.redirect("/cart");
   })
   .catch(err => {
+    console.log(err);
     res.redirect("/cart");
   });
 });
@@ -187,7 +199,7 @@ app.post("/favorite/add", (req, res) => {
   else{
     db.none(add_to_favorites, [req.session.user.user_id, req.body.product_id])
     .then(() => {
-      res.redirect("/");
+      res.redirect("/favorites");
     })
     .catch(err => {
       res.redirect("/");
@@ -200,10 +212,10 @@ app.post("/favorite/remove", (req, res) => {
 
   db.none(query, [req.session.user.user_id, req.body.product_id])
   .then(() => {
-    res.redirect("/favorite");
+    res.redirect("/favorites");
   })
   .catch(err => {
-    res.redirect("/favorite");
+    res.redirect("/favorites");
   });
 });
 
@@ -220,57 +232,51 @@ app.get("/signUp", (req, res) => {
   res.render("pages/signUp");
 });
 
-app.post("/login", (req, res) => {
-  const query = `SELECT * FROM users WHERE username='${req.body.username}' AND password='${req.body.password}'`;
+app.post("/login", async (req, res) => {
+  const query = `SELECT * FROM users WHERE username='${req.body.username}'`;
+  
+  const data = await db.any(query);
+  if (data.length === 0){
+    res.redirect("/signUp");
+  }
+  else{
+    const match = bcrypt.compare(req.body.password, data[0].password);
+    if (match){
+      user.user_id = data[0].user_id;
+      user.first_name = data[0].first_name;
+      user.last_name = data[0].last_name;
+      user.username = data[0].username;
+      user.email = data[0].email;
+      user.password = data[0].password;
+      user.admin = data[0].admin;
+      user.image_url = data[0].image_url;
 
-  db.one(query)
-  .then(data => {
-    user.user_id = data.user_id;
-    user.first_name = data.first_name;
-    user.last_name = data.last_name;
-    user.username = data.username;
-    user.email = data.email;
-    user.password = data.password;
-    user.admin = data.admin;
-    user.image_url = data.image_url;
-
-    req.session.user = user;
-    req.session.save();
-    res.redirect("/");
-  })
-  .catch(err => {
-    res.redirect("pages/login")
-  });
+      req.session.user = user;
+      req.session.save();
+      res.redirect("/");
+    } 
+    else{
+      res.redirect("/login");
+    }
+  }
 });
 
 
-app.post("/signUp", (req, res) => {
+app.post("/signUp", async (req, res) => {
   var newUser = `SELECT username FROM users WHERE username='${req.body.username}'`;
-  db.any(newUser)
-  .then(user => {
-    if (user[0]){
-      res.redirect("/signUp", {
-        message: "username taken"
-      });
-    }
-    else{
-      newUser = `INSERT INTO users (first_name, last_name, username, email, password, admin, image_url)
-      VALUES ('First', 'Last', '${req.body.username}', '${req.body.email}', '${req.body.password}', false, 'images/default.png')`;
-
-      db.none(newUser)
-      .then(() => {
-        res.redirect("/login");
-      })
-      .catch(err => {
-        console.log(err);
-        res.redirect("/signUp");
-      });
-    }
-  })
-  .catch(err => {
-    console.log(err);
+  const user = await db.any(newUser);
+    
+  if (user.length === 1){
     res.redirect("/signUp");
-  });
+  }
+  else{
+    const hash = await bcrypt.hash(req.body.password, 10);
+    newUser = `INSERT INTO users (first_name, last_name, username, email, password, admin, image_url)
+    VALUES ('First', 'Last', $1, $2, $3, false, 'images/default.png')`;
+
+    const user = await db.none(newUser, [req.body.username, req.body.email, hash]);
+    res.redirect("/login");
+  }
 });
 
 app.get("/cart", (req, res) => {
@@ -298,8 +304,35 @@ app.get("/user", (req, res) => {
   });
 });
 
+app.post("/user", async (req, res) => {
+  var query = `UPDATE users SET first_name=$1, last_name=$2, username=$3, email=$4, password=$5, image_url=$6 WHERE user_id=${req.session.user.user_id}`;
+
+  if (req.body.first_name != ''){
+    req.session.user.first_name = req.body.first_name;
+  }
+  if (req.body.last_name != ''){
+    req.session.user.last_name = req.body.last_name;
+  }
+  if (req.body.username != ''){
+    req.session.user.username = req.body.username;
+  }
+  if (req.body.email != ''){
+    req.session.user.email = req.body.email;
+  }
+  if (req.body.password != ''){
+    const hash = await bcrypt.hash(req.body.password, 10);
+    req.session.user.password = hash;
+  }
+  if (req.body.image_url != ''){
+    req.session.user.image_url = req.body.image_url;
+  }
+  req.session.save();
+  await db.none(query, [req.session.user.first_name, req.session.user.last_name, req.session.user.username, req.session.user.email, req.session.user.password, req.session.user.image_url]);
+  res.redirect('/user');
+});
+
 app.get("/logout", (req, res) => {
-  req.session.destroy();
+  req.session.destroy(); 
   res.redirect("/");
 });
 
@@ -309,35 +342,63 @@ app.get("/favorites", (req, res) => {
   }
   else{
     db.task('get-everyting', task => {
-      return task.batch([db.any(favorite_products, [req.session.user.user_id]), db.any(cart, [res.session.user.user_id])]);
+      return task.batch([db.any(favorite_products, [req.session.user.user_id]), db.any(cart, [req.session.user.user_id])]);
     })
     .then(data => {
       res.render("pages/favorites", {
-        favorite_products: data[0],
-        cart_products: data[1],
+        favorites: data[0],
+        cart: data[1],
       });
     })
     .catch(err => {
-      res.render("pages/favorites", {
-        favorite_products: [],
-        cart_products: [],
-      });
+      console.log(err);
+      res.redirect("/");
     });
   }
 });
 
 app.get("/carousel", (req, res) => {
-  db.any(all_products, ['%'])
-  .then(products => {
-    res.render("pages/carousel", {
-      products,
+  if (!req.session.user){
+    db.any(all_products, ['%'])
+    .then(products => {
+      const random = Math.floor(Math.random() * products.length);
+      res.render("pages/carousel", {
+        products,
+        random,
+        cart: [],
+        favorite_products: [],
+      });
+    })
+    .catch(err => {
+      res.render("pages/carousel", {
+        products: [],
+        random,
+        cart: [],
+        favorite_products: [],
+      });
     });
-  })
-  .catch(err => {
-    res.render("pages/carousel", {
-      products: [],
+  }
+  else{
+    db.task('get-random', task => {
+      return task.batch([db.any(all_products, ['%']), db.any(cart, [req.session.user.user_id]), db.any(favorite_products, [req.session.user.user_id])]);
+    })
+    .then(data => {
+      const random = Math.floor(Math.random() * data[0].length);
+      res.render("pages/carousel", {
+        products: data[0],
+        random,
+        cart: data[1],
+        favorite_products: data[2],
+      });
+    })
+    .catch(err => {
+      res.render("pages/carousel", {
+        products: [],
+        cart: [],
+        favorite_products: [],
+      });
     });
-  });
+  }
 });
 
 app.get("/add", (req, res) => {
@@ -345,11 +406,30 @@ app.get("/add", (req, res) => {
     res.redirect("/login");
   }
   else{
-    res.render("pages/add_product");
+    res.render("pages/add_product"); 
   }
 });
 
-// Listening on port 4000
+app.post("/add", (req, res) => {
+  var query = `INSERT INTO products (name, description, size, price, image_url, user_id) VALUES ($1,$2,$3,$4,$5,${req.session.user.user_id})`;
+  db.none(query, [req.body.name, req.body.description, req.body.size, req.body.price, req.body.image_url])
+  .then(() => {
+    res.redirect('/');
+  })
+  .catch(err => {
+    console.log(err);
+    res.redirect('/add');
+  });
+});
+
+app.get("/about", (req, res) => {
+  res.render("pages/about")
+});
+
+app.get("/contact", (req, res) => {
+  res.render("pages/contact");
+});
+
 app.listen(4000, () => {
   console.log('listening on port 4000');
 });

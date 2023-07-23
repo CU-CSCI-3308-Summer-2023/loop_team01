@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(30) NOT NULL,
     username VARCHAR(30) NOT NULL UNIQUE,
     email VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password CHAR(100) NOT NULL,
     admin BOOLEAN NOT NULL,
-    image_url VARCHAR(100)
+    image_url CHAR(1000)
 );
 
 DROP TABLE IF EXISTS products CASCADE;
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS products (
     description VARCHAR(300) NOT NULL,
     size VARCHAR(20) NOT NULL,
     price DECIMAL NOT NULL,
-    image_url VARCHAR(100) NOT NULL,
+    image_url CHAR(500) NOT NULL,
     user_id INT NOT NULL
 );
 
