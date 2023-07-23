@@ -146,28 +146,27 @@ app.post("/cart/add", (req, res) => {
 });
 
 app.post("/cart/empty", (req, res) => {
-  console.log("endpoint reached");
-  var empty_cart = `DELETE FROM cart`;
+  var empty_cart = `DELETE FROM cart WHERE user_id=$1`;
+
   db.none(empty_cart, [req.session.user.user_id])
   .then(() => {
-    res.redirect("/");
+    res.redirect("/cart");
   })
   .catch(err => {
-    console.log(err);
     res.redirect("/");
   });
 });
 
 app.post("/cart/checkout/empty", (req, res) => {
-  console.log("endpoint reached");
-  var empty_cart = `DELETE FROM cart`;
+  var empty_cart = `DELETE FROM cart WHERE user_id=$1`;
+
   db.none(empty_cart, [req.session.user.user_id])
   .then(() => {
     res.redirect("/checkout");
   })
   .catch(err => {
     console.log(err);
-    res.redirect("/checkout");
+    res.redirect("/");
   });
 });
 
@@ -179,9 +178,8 @@ app.get("/checkout", (req, res) => {
 });
 
 app.post("/cart/remove", (req, res) => {
-  console.log("endpoint reached");
   var remove_from_cart = `DELETE FROM cart WHERE user_id=$1 AND product_id=$2`;
-  console.log(req.body.product_id);
+
   db.none(remove_from_cart, [req.session.user.user_id, req.body.product_id])
   .then(() => {
     res.redirect("/cart");
